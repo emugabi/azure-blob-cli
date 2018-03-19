@@ -3,6 +3,7 @@
 namespace App\Commands;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Commands\Command;
 
 class DownloadAzureBlob extends Command
@@ -47,13 +48,16 @@ class DownloadAzureBlob extends Command
         $bar = $this->output->createProgressBar(count($filesArray));
         $fileIds = array_keys($filesArray);
 
-        if ($this->confirm('Do you want to show blob sizes?'))
+        if ($this->confirm('Do you want to show blob sizes?')){
+
             foreach ($filesArray as $file) {
                 $fileSizes[] = filesize_formatted($disk->size($file));
                 $bar->advance();
             }
 
-        $bar->finish();
+            $bar->finish();
+
+        }
 
         $headers = ['Id', 'Name', 'Size'];
 

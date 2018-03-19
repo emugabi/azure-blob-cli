@@ -51,7 +51,7 @@ return [
     'providers' => [
         App\Providers\AppServiceProvider::class,
         Intonate\TinkerZero\TinkerZeroServiceProvider::class,
-        \League\Flysystem\Azure\AzureAdapter::class
+        \App\Providers\AzureStorageServiceProvider::class
     ],
 
 ];
