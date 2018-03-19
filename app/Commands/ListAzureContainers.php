@@ -29,7 +29,7 @@ class ListAzureContainers extends Command
      */
     public function handle(): void
     {
-        $this->comment("Fetching azure containers...");
+        $this->info("Fetching azure containers...");
         $endpoint = sprintf('DefaultEndpointsProtocol=https;AccountName=%s;AccountKey=%s', env('AZURE_STORAGE_NAME'), env('AZURE_STORAGE_KEY'));
 
         $blobRestProxy = ServicesBuilder::getInstance()->createBlobService($endpoint);
@@ -41,7 +41,7 @@ class ListAzureContainers extends Command
         }
         echo "\n\n";
     
-        $this->comment("All done...");
+        $this->info("All done! You can update the AZURE_STORAGE_CONTAINER .env variable to pull blobs");
     }
 
     /**
