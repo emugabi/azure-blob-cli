@@ -50,7 +50,7 @@ class CreateContainer extends Command
             }
             if (!$containerExists) {
                 $this->info("Creating container.\n");
-                $blobRestProxy->createContainer($name);
+                $blobRestProxy->createContainer($name); 
                 $this->info("Container '" . $name . "' successfully created.\n");
             }
         } else
