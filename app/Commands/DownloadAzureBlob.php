@@ -75,7 +75,7 @@ class DownloadAzureBlob extends Command
         if ($this->confirm('Do you want to show blob sizes?')){
 
             foreach ($filesArray as $file) {
-                $fileSizes[] = filesize_formatted($disk->size($file));
+                $fileSizes[] = $this->filesize_formatted($disk->size($file));
                 $bar->advance();
             }
 
@@ -128,5 +128,12 @@ class DownloadAzureBlob extends Command
     public function schedule(Schedule $schedule): void
     {
         // $schedule->command(static::class)->everyMinute();
+    }
+
+    function filesize_formatted($size)
+    {
+        $units = array('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
+        $power = $size > 0 ? floor(log($size, 1024)) : 0;
+        return number_format($size / pow(1024, $power), 2, '.', ',') . ' ' . $units[$power];
     }
 }
