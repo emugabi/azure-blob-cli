@@ -86,7 +86,8 @@ class DownloadAzureBlob extends Command
         $headers = ['Id', 'Name', 'Size'];
 
         $tableRows = collect($filesArray)->map(function($item, $key) use ($fileIds, $fileSizes){
-            return [$fileIds[$key], $item, ''];
+
+            return [$fileIds[$key], $item, empty($fileSizes) ? 'X' : $fileSizes[$key]];
         });
 
         $this->table($headers, $tableRows);
