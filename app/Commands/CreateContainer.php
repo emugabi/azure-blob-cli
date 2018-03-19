@@ -13,7 +13,7 @@ class CreateContainer extends Command
      *
      * @var string
      */
-    protected $signature = 'azure:create-container {name}';
+    protected $signature = 'create-container {name}';
 
     /**
      * The description of the command.

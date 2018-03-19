@@ -13,7 +13,7 @@ class ListAzureContainers extends Command
      *
      * @var string
      */
-    protected $signature = 'azure:list-containers';
+    protected $signature = 'containers';
 
     /**
      * The description of the command.

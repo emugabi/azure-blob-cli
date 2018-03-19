@@ -13,7 +13,7 @@ class DeleteContainer extends Command
      *
      * @var string
      */
-    protected $signature = 'azure:delete-container {name}';
+    protected $signature = 'delete-container {name}';
 
     /**
      * The description of the command.

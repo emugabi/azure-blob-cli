@@ -13,7 +13,7 @@ class DownloadAzureBlob extends Command
      *
      * @var string
      */
-    protected $signature = 'azure:download-blobs';
+    protected $signature = 'download';
 
     /**
      * The description of the command.
