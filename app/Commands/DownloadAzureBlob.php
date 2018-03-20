@@ -28,16 +28,15 @@ class DownloadAzureBlob extends Command
     public function handle(): void
     {
 
-       // $container = $this->argument("container");
 
         $disk = Storage::disk('azure');
 
-        $foldersArray = array();
+        $foldersArray = [''];
 
         $this->task("Fetching directories within container", function () use ($disk, &$foldersArray) {
 
             try {
-                $foldersArray = $disk->allDirectories();
+                $foldersArray = array_merge($foldersArray, $disk->allDirectories());
                 return true;
 
             } catch (\Exception $exception) {
@@ -46,57 +45,62 @@ class DownloadAzureBlob extends Command
 
         });
 
-        $dirIdx = $this->menu('Choose Directory', $foldersArray)->open();
-    
+        $keepLooping = true;
 
-        if(!is_integer($dirIdx))
-            return;
+        do {
+            $dirIdx = $this->menu('Choose Directory', $foldersArray)->open();
 
-        $directory = $foldersArray[$dirIdx];
 
-        $filesArray = array();
-        $fileSizes = array();
-
-        $this->task("Fetching azure blobs in ...$directory", function () use ($directory, $disk, &$filesArray) {
-
-            try {
-                $filesArray = $disk->allFiles($directory);
-                return true;
-
-            } catch (\Exception $exception) {
-                return false;
+            if (!is_integer($dirIdx)){
+                $keepLooping = false;
+                break;
             }
 
-        });
 
-        $bar = $this->output->createProgressBar(count($filesArray));
-        $fileIds = array_keys($filesArray);
+            $directory = $foldersArray[$dirIdx];
 
-        if ($this->confirm('Do you want to show blob sizes?')){
+            $filesArray = array();
+            $fileSizes = array();
 
-            foreach ($filesArray as $file) {
-                $fileSizes[] = $this->filesize_formatted($disk->size($file));
-                $bar->advance();
+            $this->task("Fetching azure blobs in ...$directory", function () use ($directory, $disk, &$filesArray) {
+
+                try {
+                    $filesArray = $disk->allFiles($directory);
+                    return true;
+
+                } catch (\Exception $exception) {
+                    return false;
+                }
+
+            });
+
+            $bar = $this->output->createProgressBar(count($filesArray));
+            $fileIds = array_keys($filesArray);
+
+            if ($this->confirm('Do you want to show blob sizes?')) {
+
+                foreach ($filesArray as $file) {
+                    $fileSizes[] = $this->filesize_formatted($disk->size($file));
+                    $bar->advance();
+                }
+
+                $bar->finish();
+
             }
 
-            $bar->finish();
+            $this->info('\n');
 
-        }
+            $headers = ['Id', 'Name', 'Size'];
 
-        $headers = ['Id', 'Name', 'Size'];
+            $tableRows = collect($filesArray)->map(function ($item, $key) use ($fileIds, $fileSizes) {
 
-        $tableRows = collect($filesArray)->map(function($item, $key) use ($fileIds, $fileSizes){
+                return [$fileIds[$key], $item, empty($fileSizes) ? 'X' : $fileSizes[$key]];
+            });
 
-            return [$fileIds[$key], $item, empty($fileSizes) ? 'X' : $fileSizes[$key]];
-        });
+            $this->table($headers, $tableRows);
 
-        $this->table($headers, $tableRows);
+            if ($this->confirm('Do you want to download a blob?')) {
 
-        if ($this->confirm('Do you want to download a blob?')) {
-
-            $keepLooping = true;
-
-            do {
                 $response = $this->ask('Select a Blob Id to download');
                 //if(!is_integer($response) || intval($response) < 0 || intval($response) > count($fileIds))
 
@@ -114,9 +118,11 @@ class DownloadAzureBlob extends Command
                 $this->info("Saved $filesArray[$response]\n");
 
 
-            } while ($keepLooping);
+            }else{
+                $keepLooping = false;
+            }
 
-        }
+        } while ($keepLooping);
 
         $this->comment("All done...");
     }
