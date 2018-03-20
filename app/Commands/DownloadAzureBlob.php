@@ -45,14 +45,14 @@ class DownloadAzureBlob extends Command
 
         });
 
-        $keepLooping = true;
+        $mainLoop = true;
 
         do {
             $dirIdx = $this->menu('Choose Directory', $foldersArray)->open();
 
 
             if (!is_integer($dirIdx)){
-                $keepLooping = false;
+                $mainLoop = false;
                 break;
             }
 
@@ -99,9 +99,9 @@ class DownloadAzureBlob extends Command
 
             $this->table($headers, $tableRows);
 
-            if ($this->confirm('Do you want to download a blob?')) {
+            if ($this->confirm('Proceed to download?')) {
 
-                $response = $this->ask('Select a Blob Id to download');
+                $response = $this->ask('Enter Id. C to cancel');
                 //if(!is_integer($response) || intval($response) < 0 || intval($response) > count($fileIds))
 
                 if (!array_key_exists($response, $fileIds)) {
@@ -119,10 +119,10 @@ class DownloadAzureBlob extends Command
 
 
             }else{
-                $keepLooping = false;
+                $mainLoop = false;
             }
 
-        } while ($keepLooping);
+        } while ($mainLoop);
 
         $this->comment("All done...");
     }
