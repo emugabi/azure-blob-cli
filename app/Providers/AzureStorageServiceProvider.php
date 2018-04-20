@@ -41,7 +41,7 @@ class AzureStorageServiceProvider extends ServiceProvider
 
             $blobRestProxy = ServicesBuilder::getInstance()->createBlobService($endpoint);
 
-            return new Filesystem(new AzureAdapter($blobRestProxy, $config['container']));
+            return new Filesystem(new AzureAdapter($blobRestProxy, config('filesystems.disk.azure.container')));
 
         });
 

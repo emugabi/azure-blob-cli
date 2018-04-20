@@ -6,7 +6,7 @@ To learn more about laravel zero, visit [link](http://laravel-zero.com/).
 
 ## Screenshots
 
-<img src="https://i.imgur.com/x.gif" title="source: imgur.com" />
+<img src="https://i.imgur.com/hFdcUUb.gif" title="source: imgur.com" />
 
 ## Getting Started
 

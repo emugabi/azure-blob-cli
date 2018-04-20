@@ -41,7 +41,7 @@ class ListAzureContainers extends Command
         }
         echo "\n\n";
     
-        $this->info("All done! You can update the AZURE_STORAGE_CONTAINER .env variable to pull blobs");
+        $this->info("All done!");
     }
 
     /**
