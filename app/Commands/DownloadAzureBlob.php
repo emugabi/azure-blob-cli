@@ -13,7 +13,7 @@ class DownloadAzureBlob extends Command
      *
      * @var string
      */
-    protected $signature = 'download';
+    protected $signature = 'explore {container-name}';
 
     /**
      * The description of the command.
@@ -28,12 +28,15 @@ class DownloadAzureBlob extends Command
     public function handle(): void
     {
 
+        $name = $this->argument("container-name");
+
+        config(['filesystems.disk.azure.container' => $name]);
 
         $disk = Storage::disk('azure');
 
         $foldersArray = [''];
 
-        $this->task("Fetching directories within container", function () use ($disk, &$foldersArray) {
+        $this->task("Fetching directories within $name", function () use ($disk, &$foldersArray) {
 
             try {
                 $foldersArray = array_merge($foldersArray, $disk->allDirectories());
